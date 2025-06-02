@@ -1,0 +1,4 @@
+Partindo do princpio que você terá 3 servidores, no meu caso estou usando 3 VMs pelo Virtual Box.
+
+Sendo os servidores: SRVZBXDB(192.168.15.9) / SRVZBXSERVER(192.168.15.10) / SRVZBXWEB(192.168.15.11)
+
