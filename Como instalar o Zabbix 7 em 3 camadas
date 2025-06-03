@@ -1,4 +1,4 @@
-Partindo do princpio que você terá 3 servidores, no meu caso estou usando 3 VMs pelo Virtual Box.
+Partindo do princpio que você terá 3 servidores para essa instalação e em todos eles será instalado o Zabbix Agent 2.
 
 Sendo os servidores: SRVZBXDB(192.168.15.9) / SRVZBXSERVER(192.168.15.10) / SRVZBXWEB(192.168.15.11)
 
