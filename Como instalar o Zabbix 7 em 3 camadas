@@ -45,15 +45,15 @@ vim /etc/zabbix/zabbix_server.conf
 DBHost=192.168.15.2
 DBPassword=zbx@db
 
-# No SRVZBXSERVER comente a linha do hostname do server, onde irá pegar por padrão o nome da VM:
+# No SRVZBXSERVER comente a linha do Hostname
 vim /etc/zabbix/zabbix_agent2.conf
-Hostname=Zabbix server deverá ficar como # Hostname=Zabbix server
+Hostname=Zabbix server
 
-# No SRVZBXSERVER altere o arquivo de configuração para:
+# No SRVZBXSERVER altere o arquivo de configuração para os itens abaixo e comente a linha do Hostname:
 vim /etc/zabbix/zabbix_agent2.conf
 Server=192.168.15.11
 ServerActive=192.168.15.11
-Hostname=Zabbix server deverá ficar como # Hostname=Zabbix server
+Hostname=Zabbix server
 
 # Ainda no SRVZBXSERVER execute o comando abaixo para reiniciar o serviço:
 systemctl restart zabbix-server.service zabbix-agent2.service
@@ -63,5 +63,5 @@ systemctl enable zabbix-server.service zabbix-agent2.service
 systemctl restart apache2.service
 systemctl enable apache2.service
 
-# Agora em seu navegador, abra a URL http://192.168.15.11
+# Agora em seu navegador, abra a URL http://192.168.15.9/zabbix/
 # E faça o preenchimento das informações solicitadas, assim como o que foi definido como o IP do banco + senha!
