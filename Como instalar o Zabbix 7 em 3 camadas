@@ -2,3 +2,49 @@ Partindo do princpio que você terá 3 servidores, no meu caso estou usando 3 VM
 
 Sendo os servidores: SRVZBXDB(192.168.15.9) / SRVZBXSERVER(192.168.15.10) / SRVZBXWEB(192.168.15.11)
 
+Realizar o comando abaixo no SERVER e no WEB:
+
+# wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
+# dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
+# apt update
+# apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent2
+# apt install zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql
+
+No DB faça a instalação do MySqlServer:
+
+# apt install mysql-server
+
+Configure o arquivo de mysql.cnf para receber conexão de outros IP:
+# vim /etc/mysql/mysql.conf.d/mysqld.cnf
+No campo: bind-address = 127.0.0.1
+Coloque: bind-address = 0.0.0.0
+
+Ainda no DB faça a configuração do MYSQL para o Zabbix:
+
+# mysql -uroot -p
+password
+No campo acima digite a senha que será definida no usuário do root do MYSQL
+Já dentro do MYSQL execute os comandos abaixo:
+mysql> create database zabbix character set utf8mb4 collate utf8mb4_bin;
+mysql> create user zabbix@localhost identified by 'password';
+No campo acima zabbix@localhost, você pode mudar para % onde o banco irá pertmitir conexão de qualquer IP, ou você pode definir o IP exclusivo, lembre-se e colocar o IP entre 'IP', e no campo 'password' digite a senha que será definida para o Zabbix no banco.
+mysql> grant all privileges on zabbix.* to zabbix@localhost;
+Caso tenha colocado o % ou o IP no localhost, mude o campo acima também...
+mysql> set global log_bin_trust_function_creators = 1;
+mysql> quit;
+
+No SERVER, execute o comando abaixo:
+
+# zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h IPDOZABBIXDB -uzabbix -p zabbix
+O processo acima pode demorar dependendo dos recursos da VM.
+
+Após executar os comandos abaixo no MySQL no ZABBIXDB.
+
+# mysql -uroot -p
+password
+mysql> set global log_bin_trust_function_creators = 0;
+mysql> quit;
+
+No SERVER alterar o arquivo de configuração, colocando o IP do banco + senha configurado anteriormente:
+
+vim /etc/zabbix/zabbix_server.conf
