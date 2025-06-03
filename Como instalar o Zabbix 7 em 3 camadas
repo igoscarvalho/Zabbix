@@ -34,7 +34,9 @@ mysql> set global log_bin_trust_function_creators = 0;
 mysql> quit;
 
 # No SRVZBXSERVER alterar o arquivo de configuração, colocando o IP do banco + senha configurado anteriormente:
-
 vim /etc/zabbix/zabbix_server.conf
 DBHost=192.168.15.9
 DBPassword=zbx@db
+
+# Agora em seu navegador, abra a URL http://192.168.15.11
+# E faça o preenchimento das informações solicitadas, assim como o que foi definido como o IP do banco + senha!
