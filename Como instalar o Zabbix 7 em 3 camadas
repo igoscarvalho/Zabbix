@@ -15,6 +15,9 @@ apt install mysql-server
 vim /etc/mysql/mysql.conf.d/mysqld.cnf
 bind-address = 0.0.0.0
 
+# Reinicie o serviço do MySql:
+systemctl restart mysql.service
+
 # Ainda no DB faça a configuração do MySql para o Zabbix:
 mysql -uroot -p
 password
@@ -26,6 +29,9 @@ mysql> quit;
 
 # No SRVZBXSERVER, execute o comando abaixo:
 zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
+
+# Caso no comando acima dê o seguinte erro: ERROR 1419 (HY000) at line 2494: You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+# Faça o drop database zabbix; no SRVZBXDB e depois execute novamente o: zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
 
 # Após executar os comandos abaixo no MySQL no SRVZBXDB.
 mysql -uroot -p
