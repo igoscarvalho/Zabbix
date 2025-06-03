@@ -65,3 +65,20 @@ systemctl enable apache2.service
 
 # Agora em seu navegador, abra a URL http://192.168.15.9/zabbix/
 # E faça o preenchimento das informações solicitadas, assim como o que foi definido como o IP do banco + senha!
+
+# Não se esqueça de instalar o Zabbix Agent no SRVZBXDB
+wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
+dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
+apt update
+apt install zabbix-agent2
+apt install zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql
+
+# Altere o arquivo de configuração apontando para quem irá monitorar ele, no meu caso o SRVZBXSERVER:
+vim /etc/zabbix/zabbix_agent2.conf
+Server=192.168.15.11
+ServerActive=192.168.15.11
+#Hostname=Zabbix server
+systemctl restart zabbix-agent2
+systemctl enable zabbix-agent2
+
+============================================================================================================================================================
