@@ -31,7 +31,8 @@ mysql> quit;
 zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
 
 # Caso no comando acima dê o seguinte erro: ERROR 1419 (HY000) at line 2494: You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
-# Faça o drop database zabbix; no SRVZBXDB e depois execute novamente o: zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
+# Faça o drop database zabbix; no SRVZBXDB e depois execute novamente os comandos se criação do banco zabbix no MySql, sendo: create database zabbix character set utf8mb4 collate utf8mb4_bin; grant all privileges on zabbix.* to zabbix@'%'; set global log_bin_trust_function_creators = 1;
+# E depois no SRVZBXSERVER execute o comando novamente: zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
 
 # Após executar os comandos abaixo no MySQL no SRVZBXDB.
 mysql -uroot -p
@@ -41,8 +42,26 @@ mysql> quit;
 
 # No SRVZBXSERVER alterar o arquivo de configuração, colocando o IP do banco + senha configurado anteriormente:
 vim /etc/zabbix/zabbix_server.conf
-DBHost=192.168.15.9
+DBHost=192.168.15.2
 DBPassword=zbx@db
+
+# No SRVZBXSERVER comente a linha do hostname do server, onde irá pegar por padrão o nome da VM:
+vim /etc/zabbix/zabbix_agent2.conf
+Hostname=Zabbix server deverá ficar como # Hostname=Zabbix server
+
+# No SRVZBXSERVER altere o arquivo de configuração para:
+vim /etc/zabbix/zabbix_agent2.conf
+Server=192.168.15.11
+ServerActive=192.168.15.11
+Hostname=Zabbix server deverá ficar como # Hostname=Zabbix server
+
+# Ainda no SRVZBXSERVER execute o comando abaixo para reiniciar o serviço:
+systemctl restart zabbix-server.service zabbix-agent2.service
+systemctl enable zabbix-server.service zabbix-agent2.service
+
+# No SRVZBXWEB execute o comando abaixo:
+systemctl restart apache2.service
+systemctl enable apache2.service
 
 # Agora em seu navegador, abra a URL http://192.168.15.11
 # E faça o preenchimento das informações solicitadas, assim como o que foi definido como o IP do banco + senha!
