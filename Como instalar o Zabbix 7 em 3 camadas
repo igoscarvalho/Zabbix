@@ -82,3 +82,12 @@ systemctl restart zabbix-agent2
 systemctl enable zabbix-agent2
 
 ============================================================================================================================================================
+
+# Como instalar o Grafana:
+apt install -y adduser libfontconfig1 musl
+wget https://dl.grafana.com/enterprise/release/grafana-enterprise_12.0.1_amd64.deb
+dpkg -i grafana-enterprise_12.0.1_amd64.deb
+systemctl restart grafana-server.service
+systemctl enable grafana-server.service
+
+### FIM ###
