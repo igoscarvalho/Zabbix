@@ -1,5 +1,5 @@
 # Partindo do princpio que você terá 3 servidores para essa instalação e em todos eles será instalado o Zabbix Agent 2.
-# Sendo os servidores: SRVZBXDB(192.168.15.9) / SRVZBXSERVER(192.168.15.10) / SRVZBXWEB(192.168.15.11)
+# Sendo os servidores: SRVZBXDB(192.168.15.2) / SRVZBXSERVER(192.168.15.11) / SRVZBXWEB(192.168.15.9)
 # Realizar o comando abaixo no SRVZBXSERVER e no SRVZBXWEB:
 
 wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
@@ -19,13 +19,13 @@ bind-address = 0.0.0.0
 mysql -uroot -p
 password
 mysql> create database zabbix character set utf8mb4 collate utf8mb4_bin;
-mysql> create user zabbix@localhost identified by 'zbx@db';
-mysql> grant all privileges on zabbix.* to zabbix@localhost;
+mysql> create user zabbix@'%' identified by 'zbx@db';
+mysql> grant all privileges on zabbix.* to zabbix@'%';
 mysql> set global log_bin_trust_function_creators = 1;
 mysql> quit;
 
 # No SRVZBXSERVER, execute o comando abaixo:
-zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.9 -uzabbix -p zabbix
+zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
 
 # Após executar os comandos abaixo no MySQL no SRVZBXDB.
 mysql -uroot -p
