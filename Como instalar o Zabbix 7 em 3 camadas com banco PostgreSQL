@@ -27,21 +27,12 @@ sudo -u postgres createuser --pwprompt zabbix
 sudo -u postgres createdb -O zabbix zabbix
 
 # No SRVZBXSERVER, execute o comando abaixo:
-zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
-
-# Caso no comando acima dê o seguinte erro: ERROR 1419 (HY000) at line 2494: You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
-# Faça o drop database zabbix; no SRVZBXDB e depois execute novamente os comandos se criação do banco zabbix no MySql, sendo: create database zabbix character set utf8mb4 collate utf8mb4_bin; grant all privileges on zabbix.* to zabbix@'%'; set global log_bin_trust_function_creators = 1;
-# E depois no SRVZBXSERVER execute o comando novamente: zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
-
-# Após executar os comandos abaixo no MySQL no SRVZBXDB.
-mysql -uroot -p
-password
-mysql> set global log_bin_trust_function_creators = 0;
-mysql> quit;
+apt install postgresql-client
+zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | PGPASSWORD='zbx@db' psql -h 192.168.15.100 -U zabbix -d zabbix
 
 # No SRVZBXSERVER alterar o arquivo de configuração, colocando o IP do banco + senha configurado anteriormente:
 vim /etc/zabbix/zabbix_server.conf
-DBHost=192.168.15.2
+DBHost=192.168.15.100
 DBPassword=zbx@db
 
 # No SRVZBXSERVER comente a linha do Hostname
@@ -58,11 +49,11 @@ Hostname=Zabbix server
 systemctl restart zabbix-server.service zabbix-agent2.service
 systemctl enable zabbix-server.service zabbix-agent2.service
 
-# No SRVZBXWEB execute o comando abaixo:
+# No SRVZBXWEB execute o comando abaixo, se necessário.
 systemctl restart apache2.service
 systemctl enable apache2.service
 
-# Agora em seu navegador, abra a URL http://192.168.15.9/zabbix/
+# Agora em seu navegador, abra a URL http://192.168.15.102/zabbix/
 # E faça o preenchimento das informações solicitadas, assim como o que foi definido como o IP do banco + senha!
 
 # Não se esqueça de instalar o Zabbix Agent no SRVZBXDB
@@ -74,11 +65,11 @@ apt install zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent
 
 # Altere o arquivo de configuração apontando para quem irá monitorar ele, no meu caso o SRVZBXSERVER:
 vim /etc/zabbix/zabbix_agent2.conf
-Server=192.168.15.11
-ServerActive=192.168.15.11
+Server=192.168.15.101
+ServerActive=192.168.15.101
 #Hostname=Zabbix server
-systemctl restart zabbix-agent2
-systemctl enable zabbix-agent2
+systemctl restart zabbix-agent2.service
+systemctl enable zabbix-agent2.service
 
 ============================================================================================================================================================
 
