@@ -1,31 +1,30 @@
 # Partindo do princpio que você terá 3 servidores para essa instalação e em todos eles será instalado o Zabbix Agent 2.
-# Sendo os servidores: SRVZBXDB(192.168.15.2) / SRVZBXSERVER(192.168.15.11) / SRVZBXWEB(192.168.15.9)
+# Sendo os servidores: SRVZBXDB(192.168.15.100) / SRVZBXSERVER(192.168.15.101) / SRVZBXWEB(192.168.15.102)
 # Realizar o comando abaixo no SRVZBXSERVER e no SRVZBXWEB:
 
 wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
 dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
 apt update
-apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent2
+apt install zabbix-server-pgsql zabbix-frontend-php php8.3-pgsql zabbix-apache-conf zabbix-sql-scripts zabbix-agent2
 apt install zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql
 
-# No DB faça a instalação do MySqlServer:
-apt install mysql-server
+# No DB faça a instalação do PostgreSQL:
+apt install postgresql postgresql-contrib
 
-# Configure o arquivo de mysqld.cnf para receber conexão de outros IP, no meu caso coloquei qualquer um:
-vim /etc/mysql/mysql.conf.d/mysqld.cnf
-bind-address = 0.0.0.0
+# Configure o arquivo de postgresql.conf para receber conexão de outros IP, no meu caso coloquei qualquer um:
+vim /etc/postgresql/16/main/postgresql.conf
+listen_addresses = '*'
+
+# Configure o arquivo de pg_hba.conf para receber conexão de outros IP, no meu caso coloquei qualquer um:
+/etc/postgresql/16/main/pg_hba.conf
+host    all             all             192.168.15.0/24            scram-sha-256
 
 # Reinicie o serviço do MySql:
-systemctl restart mysql.service
+systemctl restart postgresql.service
 
-# Ainda no DB faça a configuração do MySql para o Zabbix:
-mysql -uroot -p
-password
-mysql> create database zabbix character set utf8mb4 collate utf8mb4_bin;
-mysql> create user zabbix@'%' identified by 'zbx@db';
-mysql> grant all privileges on zabbix.* to zabbix@'%';
-mysql> set global log_bin_trust_function_creators = 1;
-mysql> quit;
+# Ainda no DB faça a configuração do PostgreSQL para o Zabbix:
+sudo -u postgres createuser --pwprompt zabbix
+sudo -u postgres createdb -O zabbix zabbix
 
 # No SRVZBXSERVER, execute o comando abaixo:
 zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -h 192.168.15.2 -uzabbix -p zabbix
