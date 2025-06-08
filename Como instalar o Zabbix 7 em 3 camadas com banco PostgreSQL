@@ -39,15 +39,18 @@ DBPassword=zbx@db
 vim /etc/zabbix/zabbix_agent2.conf
 Hostname=Zabbix server
 
-# No SRVZBXSERVER altere o arquivo de configuração para os itens abaixo e comente a linha do Hostname:
+# No SRVZBXWEB altere o arquivo de configuração para os itens abaixo e comente a linha do Hostname:
 vim /etc/zabbix/zabbix_agent2.conf
-Server=192.168.15.11
-ServerActive=192.168.15.11
+Server=192.168.15.101
+ServerActive=192.168.15.101
 Hostname=Zabbix server
 
 # Ainda no SRVZBXSERVER execute o comando abaixo para reiniciar o serviço:
 systemctl restart zabbix-server.service zabbix-agent2.service
 systemctl enable zabbix-server.service zabbix-agent2.service
+
+# Agora em seu navegador, abra a URL http://192.168.15.102/zabbix/
+# E faça o preenchimento das informações solicitadas, assim como o que foi definido como o IP do banco + senha!
 
 # No SRVZBXWEB execute o comando abaixo e coloque as informações abaixo:
 vim /etc/zabbix/web/zabbix.conf.php
@@ -55,9 +58,6 @@ $ZBX_SERVER                     = '192.168.15.101';
 $ZBX_SERVER_PORT                = '10051';
 systemctl restart apache2.service
 systemctl enable apache2.service
-
-# Agora em seu navegador, abra a URL http://192.168.15.102/zabbix/
-# E faça o preenchimento das informações solicitadas, assim como o que foi definido como o IP do banco + senha!
 
 # Não se esqueça de instalar o Zabbix Agent no SRVZBXDB
 wget https://repo.zabbix.com/zabbix/7.2/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.2+ubuntu24.04_all.deb
