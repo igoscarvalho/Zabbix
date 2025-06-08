@@ -16,7 +16,7 @@ vim /etc/postgresql/16/main/postgresql.conf
 listen_addresses = '*'
 
 # Configure o arquivo de pg_hba.conf para receber conexão de outros IP, no meu caso coloquei qualquer um:
-/etc/postgresql/16/main/pg_hba.conf
+vim /etc/postgresql/16/main/pg_hba.conf
 host    all             all             192.168.15.0/24            scram-sha-256
 
 # Reinicie o serviço do MySql:
@@ -28,7 +28,7 @@ sudo -u postgres createdb -O zabbix zabbix
 
 # No SRVZBXSERVER, execute o comando abaixo:
 apt install postgresql-client
-zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | PGPASSWORD='zbx@db' psql -h 192.168.15.100 -U zabbix -d zabbix
+zcat /usr/share/zabbix/sql-scripts/postgresql/server.sql.gz | PGPASSWORD='zbx@db' psql -h 192.168.15.100 -U zabbix -d zabbix
 
 # No SRVZBXSERVER alterar o arquivo de configuração, colocando o IP do banco + senha configurado anteriormente:
 vim /etc/zabbix/zabbix_server.conf
