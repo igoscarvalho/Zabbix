@@ -19,7 +19,7 @@ listen_addresses = '*'
 vim /etc/postgresql/16/main/pg_hba.conf
 host    all             all             192.168.15.0/24            scram-sha-256
 
-# Reinicie o serviço do MySql:
+# Reinicie o serviço do PostgreSQl:
 systemctl restart postgresql.service
 
 # Ainda no DB faça a configuração do PostgreSQL para o Zabbix:
